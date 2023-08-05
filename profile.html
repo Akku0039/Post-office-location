@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+    <div class="aa">
+        <h3>IP Address: <span id="ipAddress"></span></h3>
+        <div id="profileInfo">
+           
+            
+            
+            <div class="cc">
+            <p>Region: <span id="region"></span></p>
+
+            <p>City: <span id="city"></span></p>
+        </div>
+            <div class="cc">
+            <p>Latitude: <span id="latitude"></span></p>
+        
+            <p>Longitude: <span id="longitude"></span></p>
+        </div>
+            <div class="cc">
+            <p>Hostname: <span id="hostname"></span></p>
+            <p>Organization: <span id="organization"></span></p>
+        </div>
+          </div>
+          
+          <!-- Add the JavaScript to fetch and display the data -->
+          <script src="profile.js"></script>
+        
+</div>
+<div class="bb">
+    <h1 style="border:0; margin-left: 500px; color: aliceblue;">Your Current Location</h1>
+    <br>
+    <iframe src="https://maps.google.com/maps?q=35.856737, 10.606619&z=15&output=embed" width="1000" height="500" frameborder="0" style="border:0; margin-left: 200px;margin-right: 200px;"></iframe>
+    <br>
+    <br>
+</div>
+<div class="ak">
+    <h1 style="margin-left: 500px;" >More Information About You</h1>
+  <p style="margin-left: 100px;">Date and Time: <span id="dateTime"></span></p>
+  <p style="margin-left: 100px;">Time Zone: <span id="timeZone"></span></p>
+  <p style="margin-left: 100px;">Pincode: <span id="pincode"></span></p>
+  <p id="message" style="margin-left: 100px;"> Message</p>
+
+  <script src="user_info.js"></script>
+</div>
+<div class="au">
+    <h1 style="color: aliceblue; margin-left: 600px;">Post Offices Near You</h1>
+    <label for="searchBox" style="font-size: larger; margin-left: 80px;color: white;">Search Post Offices:</label>
+  <input type="text" id="searchBox" placeholder="Search by Name or Branch Type" style="width: 300px; /* Adjust the width as needed */
+  height: 30px;
+  padding: 5px;
+  font-size: 16px;
+  border: 1px solid #eee6e6; /* Black border */
+  background-color: #000; /* Black background color */
+  color: #fff; width: 80%; border-radius: 10px;">
+  <div id="map"></div>
+  
+    <div id="postOfficesList" style="color: #eee6e6; margin-left: 100px; display: flex;" class="box-container">
+      <!-- The list of post offices will be added here -->
+    </div>
+    
+    <script src="post_offices.js"></script>
+</div>
+  </body>
+  <script>
+    // ...Previous JavaScript code...
+
+    // Function to filter post offices based on search input
+    function filterPostOffices(searchTerm) {
+      const postOffices = data[0].PostOffice;
+      const filteredPostOffices = postOffices.filter(postOffice => {
+        const { Name, BranchType } = postOffice;
+        return Name.toLowerCase().includes(searchTerm.toLowerCase()) || BranchType.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+
+      // Display filtered post offices on Google Map
+      const map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: parseFloat(lat), lng: parseFloat(lon) },
+        zoom: 12,
+      });
+
+      filteredPostOffices.forEach(postOffice => {
+        const { Name, BranchType, Latitude, Longitude } = postOffice;
+        const marker = new google.maps.Marker({
+          position: { lat: parseFloat(Latitude), lng: parseFloat(Longitude) },
+          map: map,
+          title: `${Name} - ${BranchType}`,
+        });
+      });
+    }
+
+    // Attach input event to the search box
+    document.getElementById('searchBox').addEventListener('input', () => {
+      const searchTerm = document.getElementById('searchBox').value;
+      filterPostOffices(searchTerm);
+    });
+  </script>
+  
+</body>
+</html>

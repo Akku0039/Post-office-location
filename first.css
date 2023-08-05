@@ -1,0 +1,33 @@
+.aa{
+    background-color: black;
+    color: #f0f8ff;
+    width: 50%;
+    place-items: center;
+    
+}
+.img{
+    margin-left: 25%;
+}
+.zz{
+    background-color: rgb(122, 122, 180);
+    width: 50%;
+
+  
+    
+}
+.ff{
+    display: flex;
+    height: 700px;
+    margin:20px;
+}
+#getLocationBtn{
+     
+        border: 2px solid rgb(250, 247, 247);
+        background-color: rgb(100, 120, 192);
+        color: black;
+        padding: 14px 28px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+      
+}

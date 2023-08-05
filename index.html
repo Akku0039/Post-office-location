@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Location</title>
+  <link rel="stylesheet" href="first.css">
+</head>
+<body>
+    <div class="ff">
+    <div class="aa">
+        <h1 id="bb" style="margin-left: 20px; margin-top: 20px;">Post office Application</h1>
+        <p id="cc" style="margin-left: 20px; margin-right: 20px;">The Application Allows you to extract information about the nearest post offices,based on you location</p>
+        <br>
+        <br>
+        <br>
+        <div class="img1">
+        <img src="post office image.jpg" class="img" style="width: 300px; height: 200px; margin-top: 80px;" alt="...">
+        </div>
+    </div>
+ <div class="zz">
+  <h3 style="margin-left: 300px; margin-top: 300px;">Your Current IP Address is</h3>
+  <p id="ipAddress" style="margin-left: 300px; margin-top: 30px;"></p>
+  <a href="profile.html"><button id="getLocationBtn" style="margin-left: 350px; margin-top: 30px; ">Get Started</button></a>
+  <div id="map"></div>
+</div>
+</div>
+  <script>
+    // Function to fetch location information from API
+    function getUserLocationInfo(ip) {
+      fetch(`https://ipinfo.io/${ip}/geo`)
+        .then(response => response.json())
+        .then(data => {
+          // Extract latitude and longitude
+          const { loc } = data;
+          const [lat, lon] = loc.split(',');
+
+          // Display user's location on Google Map
+          const map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: parseFloat(lat), lng: parseFloat(lon) },
+            zoom: 12,
+          });
+
+          const marker = new google.maps.Marker({
+            position: { lat: parseFloat(lat), lng: parseFloat(lon) },
+            map: map,
+            title: 'User Location',
+          });
+
+          // Get timezone and current time
+          const timezone = data.timezone;
+          // Use the function from the link you provided to get current time in the given timezone
+          const currentTime = getCurrentTimeInTimezone(timezone);
+          console.log('User Location:', data);
+          console.log('Current Time:', currentTime);
+        })
+        .catch(error => console.error('Error fetching location info:', error));
+    }
+
+    // Function to get the user's IP address
+    function getUserIPAddress() {
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+          const ipAddress = data.ip;
+          document.getElementById('ipAddress').innerText = `Your IP Address: ${ipAddress}`;
+
+          // Attach click event to the button to get location info
+          document.getElementById('getLocationBtn').addEventListener('click', () => {
+            getUserLocationInfo(ipAddress);
+          });
+        })
+        .catch(error => console.error('Error fetching IP address:', error));
+    }
+
+    // Call the function to get the IP address on page load
+    getUserIPAddress();
+    <!-- ...Previous HTML code... -->
+
+  // Function to fetch list of post offices based on pincode
+  function getPostOffices(pincode) {
+    fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+      .then(response => response.json())
+      .then(data => {
+        const postOffices = data[0].PostOffice;
+
+        // Display post offices on Google Map
+        const map = new google.maps.Map(document.getElementById('map'), {
+          center: { lat: parseFloat(lat), lng: parseFloat(lon) },
+          zoom: 12,
+        });
+
+        postOffices.forEach(postOffice => {
+          const { Name, BranchType, Latitude, Longitude } = postOffice;
+          const marker = new google.maps.Marker({
+            position: { lat: parseFloat(Latitude), lng: parseFloat(Longitude) },
+            map: map,
+            title: `${Name} - ${BranchType}`,
+          });
+        });
+      })
+      .catch(error => console.error('Error fetching post offices:', error));
+  }
+
+  // Attach click event to the button to fetch post offices on the given pincode
+  document.getElementById('getLocationBtn').addEventListener('click', () => {
+    const ip = document.getElementById('getLocationBtn').getAttribute('data-ip');
+    if (!ip) {
+      console.error('IP address not available.');
+      return;
+    }
+
+    // Make the API request to get location info
+    fetch(`https://ipinfo.io/${ip}/geo`)
+      .then(response => response.json())
+      .then(data => {
+        const pincode = data.postal;
+        getPostOffices(pincode);
+      })
+      .catch(error => console.error('Error fetching location info:', error));
+  });
+
+  </script>
+  <!-- Add the Google Maps API script here -->
+</body>
+</html>
